@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 from core.scanner import FlightScanner
 from core.scoring import FlightScorer
+from core.flight_analyzer import FlightAnalyzer
 from config import Config
 
 # Set up logging
@@ -31,6 +32,7 @@ def main():
         config = Config()
         scanner = FlightScanner()
         scorer = FlightScorer()
+        analyzer = FlightAnalyzer()
         
         # Get military flights
         logging.info("🔍 Scanning for military flights...")
@@ -60,25 +62,16 @@ def main():
             
             fr24_url = f"https://www.flightradar24.com/{callsign}"
             
+            # Generate intelligence analysis
+            intelligence_summary = analyzer.generate_intelligence_summary(best_flight, best_score)
+            
             # Send WhatsApp notification
             try:
                 from core.whatsapp_sender import WhatsAppSender
                 sender = WhatsAppSender()
                 
-                message = f"""🚁 MILITARY FLIGHT DETECTED
-
-Aircraft: {best_flight.get('aircraft_code', 'Unknown')}
-Callsign: {callsign}
-Registration: {best_flight.get('registration', 'Unknown')}
-Altitude: {best_flight.get('altitude', 0)} ft
-Speed: {best_flight.get('ground_speed', 0)} kts
-
-Live tracking: {fr24_url}
-
-Detected at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC"""
-
-                sender.send_message(message)
-                logging.info("✅ WhatsApp notification sent successfully")
+                sender.send_flight_notification(best_flight, fr24_url, intelligence_summary)
+                logging.info("✅ WhatsApp notification with intelligence analysis sent successfully")
                 
             except Exception as e:
                 logging.error(f"❌ Failed to send WhatsApp notification: {e}")

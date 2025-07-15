@@ -51,6 +51,10 @@ class WhatsAppSender:
             return False
         
         try:
+            if not self.to_number:
+                logging.error("❌ No destination number configured")
+                return False
+                
             twilio_message = self.client.messages.create(
                 from_=self.from_number,
                 body=message,
@@ -64,13 +68,14 @@ class WhatsAppSender:
             logging.error(f"❌ Failed to send WhatsApp message: {e}")
             return False
     
-    def send_flight_notification(self, flight_data: dict, fr24_url: str) -> bool:
+    def send_flight_notification(self, flight_data: dict, fr24_url: str, intelligence_summary: str = "") -> bool:
         """
-        Send a formatted military flight notification
+        Send a formatted military flight notification with intelligence analysis
         
         Args:
             flight_data: Dictionary containing flight information
             fr24_url: FlightRadar24 tracking URL
+            intelligence_summary: Detailed intelligence analysis
             
         Returns:
             bool: True if message sent successfully, False otherwise
@@ -90,6 +95,8 @@ Altitude: {altitude} ft
 Speed: {speed} kts
 
 Live tracking: {fr24_url}
+
+{intelligence_summary}
 
 Detected via Military Flight Tracker Bot"""
 
