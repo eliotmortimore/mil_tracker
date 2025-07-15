@@ -143,12 +143,12 @@ class FlightScanner:
                             if isinstance(aircraft, dict):
                                 flight = {
                                     'callsign': aircraft.get('callsign', ''),
-                                    'aircraft_code': aircraft.get('aircraft_type', ''),
-                                    'registration': aircraft.get('registration', ''),
-                                    'latitude': aircraft.get('latitude', 0),
-                                    'longitude': aircraft.get('longitude', 0),
-                                    'altitude': aircraft.get('altitude', 0),
-                                    'ground_speed': aircraft.get('ground_speed', 0),
+                                    'aircraft_code': aircraft.get('type', ''),
+                                    'registration': aircraft.get('reg', ''),
+                                    'latitude': aircraft.get('lat', 0),
+                                    'longitude': aircraft.get('lon', 0),
+                                    'altitude': aircraft.get('alt', 0),
+                                    'ground_speed': aircraft.get('gspeed', 0),
                                 }
                                 flights.append(flight)
                     else:
